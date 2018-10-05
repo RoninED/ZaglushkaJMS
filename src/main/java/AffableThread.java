@@ -1,4 +1,4 @@
-import com.ibm.mq.MQQueue;
+//import com.ibm.mq.MQQueue;
 import com.ibm.mq.jms.*;
 import com.ibm.msg.client.wmq.WMQConstants;
 
@@ -11,7 +11,7 @@ class AffableThread extends Thread
 {
 
     String host = "localhost";// хост, где расположен MQ-сервер
-    int port = 8888; // порт для работы с MQ-сервером
+    int port = 1414; // порт для работы с MQ-сервером
     String mqQManager = "PraiseTheSun"; // менеджер очередей MQ
     String mqQChannel = "SYSTEM.DEF.SVRCONN"; // Канал для подключения к MQ-серверу
     String mqQIn = "MQ.Incoming"; // Очередь входящих сообщений
@@ -51,10 +51,10 @@ class AffableThread extends Thread
 
             mqConn = (MQQueueConnection) mqCF.createQueueConnection();
             mqQSession = (MQQueueSession) mqConn.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
-            mqIn = (MQQueue) mqQSession.createQueue("SomeInQueue"); // входная
-            mqOut = (MQQueue) mqQSession.createQueue("SomeOutQueue"); // выходная
-            mqSender = (MQQueueSender) mqQSession.createSender((Queue) mqOut);
-            mqReceiver = (MQQueueReceiver) mqQSession.createReceiver((Queue) mqIn);
+            mqIn = (MQQueue) mqQSession.createQueue("In"); // входная
+            mqOut = (MQQueue) mqQSession.createQueue("Out"); // выходная
+            mqSender = (MQQueueSender) mqQSession.createSender(mqOut);
+            mqReceiver = (MQQueueReceiver) mqQSession.createReceiver(mqIn);
             this.replyProd = this.mqQSession.createProducer(null);
             this.replyProd.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             mqConn.start();
