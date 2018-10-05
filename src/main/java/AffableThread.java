@@ -7,8 +7,11 @@ import javax.jms.*;
 import static com.ibm.mq.jms.admin.APWMB.*;
 
 
-class AffableThread extends Thread
-{
+public class AffableThread extends Thread{
+        public AffableThread(String in, String out){
+
+        }
+
 
     String host = "localhost";// хост, где расположен MQ-сервер
     int port = 1414; // порт для работы с MQ-сервером
