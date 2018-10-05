@@ -1,4 +1,5 @@
 //import com.ibm.mq.MQQueue;
+
 import com.ibm.mq.jms.*;
 import com.ibm.msg.client.wmq.WMQConstants;
 
@@ -7,10 +8,13 @@ import javax.jms.*;
 import static com.ibm.mq.jms.admin.APWMB.*;
 
 
-public class AffableThread extends Thread{
-        public AffableThread(String in, String out){
-
-        }
+public class AffableThread extends Thread {
+    String iin;
+    String oout;
+    public AffableThread(String in, String out) {
+       iin = in;
+       oout = out;
+    }
 
 
     String host = "localhost";// хост, где расположен MQ-сервер
@@ -29,7 +33,7 @@ public class AffableThread extends Thread{
     MQQueueReceiver mqReceiver;
     MessageProducer replyProd;
 
-    public void sendAnswer (Message msg){
+    public void sendAnswer(Message msg) {
 //            xmlAns – ответная xml
         try {
             TextMessage answer = mqQSession.createTextMessage("xmlAns");
@@ -43,7 +47,7 @@ public class AffableThread extends Thread{
 
     @Override
     public void run()       //Этот метод будет выполнен в побочном потоке
-     {
+    {
         try {
             mqCF = new MQQueueConnectionFactory();
             mqCF.setHostName(host);
@@ -54,8 +58,8 @@ public class AffableThread extends Thread{
 
             mqConn = (MQQueueConnection) mqCF.createQueueConnection();
             mqQSession = (MQQueueSession) mqConn.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
-            mqIn = (MQQueue) mqQSession.createQueue("In"); // входная
-            mqOut = (MQQueue) mqQSession.createQueue("Out"); // выходная
+            mqIn = (MQQueue) mqQSession.createQueue(iin); // входная
+            mqOut = (MQQueue) mqQSession.createQueue(oout); // выходная
             mqSender = (MQQueueSender) mqQSession.createSender(mqOut);
             mqReceiver = (MQQueueReceiver) mqQSession.createReceiver(mqIn);
             this.replyProd = this.mqQSession.createProducer(null);
@@ -83,11 +87,11 @@ public class AffableThread extends Thread{
                 }
             }
         };
-         try {
-             mqReceiver.setMessageListener(Listener);
-         } catch (JMSException e) {
-             e.printStackTrace();
-         }
+        try {
+            mqReceiver.setMessageListener(Listener);
+        } catch (JMSException e) {
+            e.printStackTrace();
+        }
 
-     }
+    }
 }
